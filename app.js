@@ -299,6 +299,17 @@ async function refresh() {
   const fids = await fetchFIDS();
   updateFlightsUI(fids);
 
+   // Limiter à 10 prochains vols
+function limitNextFlights(list) {
+  return list
+    .filter(f => f.scheduled) // vols avec horaire
+    .sort((a, b) => new Date(a.scheduled) - new Date(b.scheduled))
+    .slice(0, 10);
+}
+
+fids.arrivals = limitNextFlights(fids.arrivals);
+fids.departures = limitNextFlights(fids.departures);
+
  /* RUNWAY */
 const rw = extractRunway(fids);
 if (!rw) {
