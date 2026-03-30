@@ -1,0 +1,93 @@
+/* Panneau d'état global METAR */
+#status-panel {
+    padding: 6px 10px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: Arial, sans-serif;
+    color: #fff;
+    display: inline-block;
+}
+
+.status-ok {
+    background: #28a745;
+}
+
+.status-fallback {
+    background: #ffc107;
+    color: #000;
+}
+
+.status-offline {
+    background: #dc3545;
+}
+
+/* Panneau piste active / crosswind */
+#runway-panel {
+    padding: 6px 10px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: Arial, sans-serif;
+    display: inline-block;
+}
+
+.runway-04 {
+    background: #cfe3ff;
+    color: #003366;
+}
+
+.runway-22 {
+    background: #ffcccc;
+    color: #660000;
+}
+
+.runway-unknown {
+    background: #e0e0e0;
+    color: #333;
+}
+
+/* FIDS compact et coloré */
+#fids {
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+}
+
+.fids-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 8px;
+    margin: 2px 0;
+    border-radius: 4px;
+}
+
+.fids-row span {
+    flex: 1;
+    text-align: left;
+}
+
+.fids-on-time {
+    background: #d4f8d4;
+}
+
+.fids-delayed {
+    background: #ffe7b3;
+}
+
+.fids-cancelled {
+    background: #ffcccc;
+}
+
+.fids-boarding {
+    background: #cfe3ff;
+}
+
+.fids-unknown {
+    background: #e0e0e0;
+}
+
+/* Carte */
+#map {
+    width: 100%;
+    height: 500px;
+}
