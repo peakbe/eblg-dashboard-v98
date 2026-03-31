@@ -113,6 +113,11 @@ const CORRIDORS = {
         [50.637300, 5.463500]
     ]
 };
+
+// ======================================================
+// HELPERS
+// ======================================================
+
 function deg2rad(d) {
     return d * Math.PI / 180;
 }
@@ -138,6 +143,10 @@ function offsetPoint(lat, lng, distance_m, bearing_deg) {
     return [lat2 * 180 / Math.PI, lng2 * 180 / Math.PI];
 }
 
+// ======================================================
+// DRAW RUNWAY (RECTANGLE + CENTERLINE + NUMÉROS + QFU)
+// ======================================================
+
 function drawRunway(runway) {
     if (!runwayLayer) return;
 
@@ -148,7 +157,7 @@ function drawRunway(runway) {
     const r = RUNWAYS[runway];
     if (!r) return;
 
-    // Récupération des coordonnées
+    // Coordonnées
     const [lat1, lng1] = r.start;
     const [lat2, lng2] = r.end;
 
@@ -216,39 +225,9 @@ function drawRunway(runway) {
     }).addTo(runwayLayer);
 }
 
-    // Numéros de piste
-    const mid1 = offsetPoint(lat1, lng1, 150, heading);      // 150 m dans l'axe
-    const mid2 = offsetPoint(lat2, lng2, -150, heading);     // 150 m dans l'axe inverse
-
-    const num1 = (heading / 10).toFixed(0).padStart(2, "0");
-    const num2 = (((heading + 180) % 360) / 10).toFixed(0).padStart(2, "0");
-
-    L.marker(mid1, {
-        icon: L.divIcon({
-            className: "runway-number",
-            html: num1
-        })
-    }).addTo(runwayLayer);
-
-    L.marker(mid2, {
-        icon: L.divIcon({
-            className: "runway-number",
-            html: num2
-        })
-    }).addTo(runwayLayer);
-
-    // QFU sur la carte (au centre de la piste)
-    const centerLat = (lat1 + lat2) / 2;
-    const centerLng = (lng1 + lng2) / 2;
-    const qfuText = `QFU ${num1} / ${num2} (${heading}° / ${(heading + 180) % 360}°)`;
-
-    L.marker([centerLat, centerLng], {
-        icon: L.divIcon({
-            className: "qfu-label",
-            html: qfuText
-        })
-    }).addTo(runwayLayer);
-
+// ======================================================
+// DRAW CORRIDOR
+// ======================================================
 
 function drawCorridor(runway) {
     if (!corridorLayer) return;
@@ -282,50 +261,6 @@ function drawCorridor(runway) {
         }).addTo(corridorLayer);
     }
 }
-
-function getRunwayFromWind(windDir) {
-    if (!windDir) return "UNKNOWN";
-
-    const diff22 = Math.abs(windDir - 220);
-    const diff04 = Math.abs(windDir - 40);
-
-    return diff22 < diff04 ? "22" : "04";
-}
-
-function computeCrosswind(windDir, windSpeed, runwayHeading) {
-    if (!windDir || !windSpeed || !runwayHeading) {
-        return { crosswind: 0, angleDiff: 0 };
-    }
-
-    const angleDiff = Math.abs(windDir - runwayHeading);
-    const rad = angleDiff * Math.PI / 180;
-    const crosswind = Math.round(Math.abs(windSpeed * Math.sin(rad)));
-
-    return { crosswind, angleDiff };
-}
-
-function updateRunwayPanel(runway, windDir, windSpeed, phase) {
-    const panel = document.getElementById("runway-panel");
-    if (!panel) return;
-
-    if (runway === "UNKNOWN" || !windDir || !windSpeed) {
-        panel.className = "runway-unknown";
-        panel.innerText = "Piste inconnue";
-        return;
-    }
-
-    const r = RUNWAYS[runway];
-    const info = computeCrosswind(windDir, windSpeed, r.heading);
-
-    panel.className = runway === "22" ? "runway-22" : "runway-04";
-
-    panel.innerText =
-        `Piste ${runway} (${r.heading}°) – ` +
-        `${phase === "landing" ? "Atterrissage" : "Décollage"} – ` +
-        `${info.crosswind} kt crosswind (Δ${info.angleDiff}°) – ` +
-        `Vent ${windDir}°/${windSpeed} kt`;
-}
-
 
 // ======================================================
 // SONOMÈTRES
