@@ -129,12 +129,22 @@ export function drawCorridor(runway, layer) {
  * @param {number} windDir
  * @returns {string}
  */
+function angleDiff(a, b) {
+    return Math.min(
+        Math.abs(a - b),
+        360 - Math.abs(a - b)
+    );
+}
+
 export function getRunwayFromWind(windDir) {
     if (!windDir) return "UNKNOWN";
-    const diff22 = Math.abs(windDir - 220);
-    const diff04 = Math.abs(windDir - 40);
+
+    const diff22 = angleDiff(windDir, 220);
+    const diff04 = angleDiff(windDir, 40);
+
     return diff22 < diff04 ? "22" : "04";
 }
+
 
 /**
  * Calcule le crosswind.
